@@ -28,7 +28,6 @@ import java.util.Optional;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +40,7 @@ import static org.mockito.Mockito.when;
         JacksonCustomizations.class
 })
 public class UsersApiTest {
+
     @Autowired
     private MockMvc mvc;
 
@@ -59,13 +59,13 @@ public class UsersApiTest {
     private String defaultAvatar;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         RestAssuredMockMvc.mockMvc(mvc);
         defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
     }
 
     @Test
-    public void should_create_user_success() throws Exception {
+    public void should_create_user_success() {
         String email = "john@jacob.com";
         String username = "johnjacob";
 
@@ -98,7 +98,7 @@ public class UsersApiTest {
     }
 
     @Test
-    public void should_show_error_message_for_blank_username() throws Exception {
+    public void should_show_error_message_for_blank_username() {
 
         String email = "john@jacob.com";
         String username = "";
@@ -117,7 +117,7 @@ public class UsersApiTest {
     }
 
     @Test
-    public void should_show_error_message_for_invalid_email() throws Exception {
+    public void should_show_error_message_for_invalid_email() {
         String email = "johnxjacob.com";
         String username = "johnjacob";
 
@@ -135,7 +135,7 @@ public class UsersApiTest {
     }
 
     @Test
-    public void should_show_error_for_duplicated_username() throws Exception {
+    public void should_show_error_for_duplicated_username() {
         String email = "john@jacob.com";
         String username = "johnjacob";
 
@@ -156,7 +156,7 @@ public class UsersApiTest {
     }
 
     @Test
-    public void should_show_error_for_duplicated_email() throws Exception {
+    public void should_show_error_for_duplicated_email() {
         String email = "john@jacob.com";
         String username = "johnjacob2";
 
@@ -176,12 +176,8 @@ public class UsersApiTest {
                 .body("errors.email[0]", equalTo("duplicated email"));
     }
 
-    private Map<String, Object> prepareRegisterParameter(final String email, final String username) {
-        return ImmutableMap.of("user", ImmutableMap.of("email", email, "password", "johnnyjacob", "username", username));
-    }
-
     @Test
-    public void should_login_success() throws Exception {
+    public void should_login_success() {
         String email = "john@jacob.com";
         String username = "johnjacob2";
         String password = "123";
@@ -211,7 +207,7 @@ public class UsersApiTest {
     }
 
     @Test
-    public void should_fail_login_with_wrong_password() throws Exception {
+    public void should_fail_login_with_wrong_password() {
         String email = "john@jacob.com";
         String username = "johnjacob2";
         String password = "123";
@@ -233,5 +229,9 @@ public class UsersApiTest {
                 .then()
                 .statusCode(422)
                 .body("message", equalTo("Invalid email or password"));
+    }
+
+    private Map<String, Object> prepareRegisterParameter(final String email, final String username) {
+        return ImmutableMap.of("user", ImmutableMap.of("email", email, "password", "johnnyjacob", "username", username));
     }
 }

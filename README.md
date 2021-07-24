@@ -1,6 +1,4 @@
-# ![RealWorld Example App using Kotlin and Spring](example-logo.png)
-
-[![Actions](https://github.com/gothinkster/spring-boot-realworld-example-app/workflows/Java%20CI/badge.svg)](https://github.com/gothinkster/spring-boot-realworld-example-app/actions)
+# Spring Boot Service
 
 > ### Spring boot + MyBatis codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
@@ -40,7 +38,7 @@ The secret key is stored in `application.properties`.
 
 # Database
 
-It uses a ~~H2 in memory database~~ sqlite database (for easy local test without lost test data after every restart), can be changed easily in the `application.properties` for any other database.
+It uses a H2 in memory database (for easy local test), can be changed easily in the `application-test.properties` for any other database.
 
 # Getting started
 
@@ -68,11 +66,3 @@ The entry point address of the backend API is at http://localhost:8080, **not** 
 The repository contains a lot of test cases to cover both api test and repository test.
 
     ./gradlew test
-
-# Use git pre-commit hook
-
-Follow the instruction from [google-java-format-git-pre-commit-hook](https://github.com/a1exsh/google-java-format-git-pre-commit-hook) to use a `pre-commit` hook to make the code format style stable from different contributors.
-
-# Help
-
-Please fork and PR to improve the code.

@@ -34,11 +34,15 @@ import static org.mockito.Mockito.when;
 @Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class CommentsApiTest extends TestWithCurrentUser {
 
+    @Autowired
+    private MockMvc mvc;
+
     @MockBean
     private ArticleRepository articleRepository;
 
     @MockBean
     private CommentRepository commentRepository;
+
     @MockBean
     private CommentQueryService commentQueryService;
 
@@ -48,15 +52,13 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
     private Comment comment;
 
-    @Autowired
-    private MockMvc mvc;
-
     @Before
+    @Override
     public void setUp() throws Exception {
         RestAssuredMockMvc.mockMvc(mvc);
         super.setUp();
         article = new Article("title", "desc", "body", Arrays.asList("test", "java"), user.getId());
-        when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
+        when(articleRepository.findBySlug(article.getSlug())).thenReturn(Optional.of(article));
         comment = new Comment("comment", user.getId(), article.getId());
         commentData = new CommentData(
                 comment.getId(),
@@ -68,7 +70,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_create_comment_success() throws Exception {
+    public void should_create_comment_success() {
         Map<String, Object> param = ImmutableMap.of("comment", ImmutableMap.of("body", "comment content"));
 
         when(commentQueryService.findById(anyString(), eq(user))).thenReturn(Optional.of(commentData));
@@ -85,7 +87,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_422_with_empty_body() throws Exception {
+    public void should_get_422_with_empty_body() {
         Map<String, Object> param = ImmutableMap.of("comment", ImmutableMap.of("body", ""));
 
         given()
@@ -100,7 +102,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_comments_of_article_success() throws Exception {
+    public void should_get_comments_of_article_success() {
         when(commentQueryService.findByArticleId(anyString(), eq(null))).thenReturn(Collections.singletonList(commentData));
         RestAssuredMockMvc.when()
                 .get("/articles/{slug}/comments", article.getSlug())
@@ -111,8 +113,8 @@ public class CommentsApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_delete_comment_success() throws Exception {
-        when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
+    public void should_delete_comment_success() {
+        when(commentRepository.findById(article.getId(), comment.getId())).thenReturn(Optional.of(comment));
 
         given()
                 .header("Authorization", "Token " + token)
@@ -123,7 +125,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_403_if_not_author_of_article_or_author_of_comment_when_delete_comment() throws Exception {
+    public void should_get_403_if_not_author_of_article_or_author_of_comment_when_delete_comment() {
         User anotherUser = new User("other@example.com", "other", "123", "", "");
 
         when(userRepository.findByUsername(anotherUser.getUsername())).thenReturn(Optional.of(anotherUser));
@@ -132,7 +134,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
         when(userRepository.findById(anotherUser.getId())).thenReturn(Optional.of(anotherUser));
 
-        when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(article.getId(), comment.getId())).thenReturn(Optional.of(comment));
 
         String token = jwtService.toToken(anotherUser);
 

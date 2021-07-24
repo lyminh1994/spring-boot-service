@@ -30,6 +30,7 @@ dependencies {
     implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:latest.release"
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'joda-time:joda-time:2.10.10'
+    implementation 'org.yaml:snakeyaml:1.29'
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'

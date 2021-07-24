@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,13 +26,13 @@ import static org.mockito.Mockito.when;
 @Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ProfileApiTest extends TestWithCurrentUser {
 
-    private User anotherUser;
-
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private ProfileQueryService profileQueryService;
+
+    private User anotherUser;
 
     private ProfileData profileData;
 
@@ -47,8 +46,8 @@ public class ProfileApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_user_profile_success() throws Exception {
-        when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(null))).thenReturn(Optional.of(profileData));
+    public void should_get_user_profile_success() {
+        when(profileQueryService.findByUsername(profileData.getUsername(), null)).thenReturn(Optional.of(profileData));
         RestAssuredMockMvc.when()
                 .get("/profiles/{username}", profileData.getUsername())
                 .prettyPeek()
@@ -58,8 +57,8 @@ public class ProfileApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_follow_user_success() throws Exception {
-        when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(user))).thenReturn(Optional.of(profileData));
+    public void should_follow_user_success() {
+        when(profileQueryService.findByUsername(profileData.getUsername(), user)).thenReturn(Optional.of(profileData));
         given()
                 .header("Authorization", "Token " + token)
                 .when()
@@ -71,10 +70,10 @@ public class ProfileApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_unfollow_user_success() throws Exception {
+    public void should_unfollow_user_success() {
         FollowRelation followRelation = new FollowRelation(user.getId(), anotherUser.getId());
-        when(userRepository.findRelation(eq(user.getId()), eq(anotherUser.getId()))).thenReturn(Optional.of(followRelation));
-        when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(user))).thenReturn(Optional.of(profileData));
+        when(userRepository.findRelation(user.getId(), anotherUser.getId())).thenReturn(Optional.of(followRelation));
+        when(profileQueryService.findByUsername(profileData.getUsername(), user)).thenReturn(Optional.of(profileData));
 
         given()
                 .header("Authorization", "Token " + token)

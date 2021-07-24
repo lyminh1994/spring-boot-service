@@ -29,18 +29,20 @@ import java.util.Optional;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest({ArticleApi.class})
 @Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ArticleApiTest extends TestWithCurrentUser {
-    @MockBean
-    ArticleCommandService articleCommandService;
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    ArticleCommandService articleCommandService;
 
     @MockBean
     private ArticleQueryService articleQueryService;
@@ -56,13 +58,13 @@ public class ArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_read_article_success() throws Exception {
+    public void should_read_article_success() {
         String slug = "test-new-article";
         DateTime time = new DateTime();
         Article article = new Article("Test New Article", "Desc", "Body", Arrays.asList("java", "spring", "jpg"), user.getId(), time);
         ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
-        when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(slug, null)).thenReturn(Optional.of(articleData));
 
         RestAssuredMockMvc.when()
                 .get("/articles/{slug}", slug)
@@ -74,13 +76,13 @@ public class ArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_404_if_article_not_found() throws Exception {
+    public void should_404_if_article_not_found() {
         when(articleQueryService.findBySlug(anyString(), any())).thenReturn(Optional.empty());
         RestAssuredMockMvc.when().get("/articles/not-exists").then().statusCode(404);
     }
 
     @Test
-    public void should_update_article_content_success() throws Exception {
+    public void should_update_article_content_success() {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
@@ -91,7 +93,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
         ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
         when(articleRepository.findBySlug(article.getSlug())).thenReturn(Optional.of(article));
-        when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(article.getSlug(), user)).thenReturn(Optional.of(articleData));
 
         given()
                 .contentType("application/json")
@@ -105,7 +107,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_403_if_not_author_to_update_article() throws Exception {
+    public void should_get_403_if_not_author_to_update_article() {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
@@ -130,7 +132,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
                 new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
 
         when(articleRepository.findBySlug(article.getSlug())).thenReturn(Optional.of(article));
-        when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(article.getSlug(), user)).thenReturn(Optional.of(articleData));
 
         given()
                 .contentType("application/json")
@@ -143,7 +145,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_delete_article_success() throws Exception {
+    public void should_delete_article_success() {
         String title = "title";
         String body = "body";
         String description = "description";
@@ -162,7 +164,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_403_if_not_author_delete_article() throws Exception {
+    public void should_403_if_not_author_delete_article() {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
