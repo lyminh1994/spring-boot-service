@@ -132,7 +132,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
         when(userRepository.findById(anotherUser.getId())).thenReturn(Optional.of(anotherUser));
 
-        when(commentRepository.findById(article.getId(), eq(comment.getId()))).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
 
         String token = jwtService.toToken(anotherUser);
 

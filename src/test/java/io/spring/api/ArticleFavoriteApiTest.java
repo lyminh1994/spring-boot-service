@@ -68,7 +68,7 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
                 article.getUpdatedAt(),
                 article.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
                 new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
-        when(articleQueryService.findBySlug(articleData.getSlug(), eq(user))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(eq(articleData.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
 
     @Test
     public void should_unfavorite_an_article_success() throws Exception {
-        when(articleFavoriteRepository.find(article.getId(), eq(user.getId()))).thenReturn(Optional.of(new ArticleFavorite(article.getId(), user.getId())));
+        when(articleFavoriteRepository.find(eq(article.getId()), eq(user.getId()))).thenReturn(Optional.of(new ArticleFavorite(article.getId(), user.getId())));
         given()
                 .header("Authorization", "Token " + token)
                 .when()

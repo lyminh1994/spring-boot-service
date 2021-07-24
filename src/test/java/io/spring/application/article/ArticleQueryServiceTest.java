@@ -47,6 +47,7 @@ public class ArticleQueryServiceTest extends DbTestBase {
     private ArticleFavoriteRepository articleFavoriteRepository;
 
     private User user;
+
     private Article article;
 
     @Before

@@ -62,7 +62,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
         Article article = new Article("Test New Article", "Desc", "Body", Arrays.asList("java", "spring", "jpg"), user.getId(), time);
         ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
-        when(articleQueryService.findBySlug(slug, eq(null))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
 
         RestAssuredMockMvc.when()
                 .get("/articles/{slug}", slug)
@@ -91,7 +91,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
         ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
         when(articleRepository.findBySlug(article.getSlug())).thenReturn(Optional.of(article));
-        when(articleQueryService.findBySlug(article.getSlug(), eq(user))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
 
         given()
                 .contentType("application/json")
@@ -130,7 +130,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
                 new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
 
         when(articleRepository.findBySlug(article.getSlug())).thenReturn(Optional.of(article));
-        when(articleQueryService.findBySlug(article.getSlug(), eq(user))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
 
         given()
                 .contentType("application/json")

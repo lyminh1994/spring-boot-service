@@ -48,7 +48,7 @@ public class ListArticleApiTest extends TestWithCurrentUser {
     @Test
     public void should_get_default_article_list() throws Exception {
         ArticleDataList articleDataList = new ArticleDataList(asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
-        when(articleQueryService.findRecentArticles(null, eq(null), eq(null), eq(new Page(0, 20)), eq(null))).thenReturn(articleDataList);
+        when(articleQueryService.findRecentArticles(eq(null), eq(null), eq(null), eq(new Page(0, 20)), eq(null))).thenReturn(articleDataList);
         RestAssuredMockMvc.when().get("/articles").prettyPeek().then().statusCode(200);
     }
 
@@ -60,7 +60,7 @@ public class ListArticleApiTest extends TestWithCurrentUser {
     @Test
     public void should_get_feeds_success() throws Exception {
         ArticleDataList articleDataList = new ArticleDataList(asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
-        when(articleQueryService.findUserFeed(user, eq(new Page(0, 20)))).thenReturn(articleDataList);
+        when(articleQueryService.findUserFeed(eq(user), eq(new Page(0, 20)))).thenReturn(articleDataList);
 
         given()
                 .header("Authorization", "Token " + token)
