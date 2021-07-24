@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 abstract class TestWithCurrentUser {
+
     @MockBean
     protected UserRepository userRepository;
 

@@ -43,15 +43,15 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     @MockBean
     private ArticleCommandService articleCommandService;
 
-    @Override
     @Before
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         RestAssuredMockMvc.mockMvc(mvc);
     }
 
     @Test
-    public void should_create_article_success() throws Exception {
+    public void should_create_article_success() {
         String title = "How to train your dragon";
         String slug = "how-to-train-your-dragon";
         String description = "Ever wonder how?";
@@ -97,7 +97,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_error_message_with_wrong_parameter() throws Exception {
+    public void should_get_error_message_with_wrong_parameter() {
         String title = "How to train your dragon";
         String description = "Ever wonder how?";
         String body = "";

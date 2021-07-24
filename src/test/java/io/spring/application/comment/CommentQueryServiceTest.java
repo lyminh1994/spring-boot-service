@@ -32,6 +32,7 @@ import static org.junit.Assert.assertTrue;
         MyBatisArticleRepository.class
 })
 public class CommentQueryServiceTest extends DbTestBase {
+
     @Autowired
     private CommentRepository commentRepository;
 

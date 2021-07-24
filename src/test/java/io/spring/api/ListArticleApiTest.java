@@ -19,48 +19,47 @@ import org.springframework.test.web.servlet.MockMvc;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.spring.TestHelper.articleDataFixture;
 import static java.util.Arrays.asList;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(ArticlesApi.class)
 @Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ListArticleApiTest extends TestWithCurrentUser {
 
-    @MockBean
-    private ArticleRepository articleRepository;
+    @Autowired
+    private MockMvc mvc;
 
     @MockBean
     private ArticleQueryService articleQueryService;
 
     @MockBean
+    private ArticleRepository articleRepository;
+
+    @MockBean
     private ArticleCommandService articleCommandService;
 
-    @Autowired
-    private MockMvc mvc;
-
-    @Override
     @Before
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         RestAssuredMockMvc.mockMvc(mvc);
     }
 
     @Test
-    public void should_get_default_article_list() throws Exception {
+    public void should_get_default_article_list() {
         ArticleDataList articleDataList = new ArticleDataList(asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
-        when(articleQueryService.findRecentArticles(eq(null), eq(null), eq(null), eq(new Page(0, 20)), eq(null))).thenReturn(articleDataList);
+        when(articleQueryService.findRecentArticles(null, null, null, new Page(0, 20), null)).thenReturn(articleDataList);
         RestAssuredMockMvc.when().get("/articles").prettyPeek().then().statusCode(200);
     }
 
     @Test
-    public void should_get_feeds_401_without_login() throws Exception {
+    public void should_get_feeds_401_without_login() {
         RestAssuredMockMvc.when().get("/articles/feed").prettyPeek().then().statusCode(401);
     }
 
     @Test
-    public void should_get_feeds_success() throws Exception {
+    public void should_get_feeds_success() {
         ArticleDataList articleDataList = new ArticleDataList(asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
-        when(articleQueryService.findUserFeed(eq(user), eq(new Page(0, 20)))).thenReturn(articleDataList);
+        when(articleQueryService.findUserFeed(user, new Page(0, 20))).thenReturn(articleDataList);
 
         given()
                 .header("Authorization", "Token " + token)

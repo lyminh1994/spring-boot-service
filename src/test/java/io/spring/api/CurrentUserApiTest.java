@@ -42,15 +42,15 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
     @MockBean
     private UserQueryService userQueryService;
 
-    @Override
     @Before
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         RestAssuredMockMvc.mockMvc(mvc);
     }
 
     @Test
-    public void should_get_current_user_with_token() throws Exception {
+    public void should_get_current_user_with_token() {
         when(userQueryService.findById(any())).thenReturn(Optional.of(userData));
 
         given()
@@ -68,12 +68,12 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_401_without_token() throws Exception {
+    public void should_get_401_without_token() {
         given().contentType("application/json").when().get("/user").then().statusCode(401);
     }
 
     @Test
-    public void should_get_401_with_invalid_token() throws Exception {
+    public void should_get_401_with_invalid_token() {
         String invalidToken = "asdfasd";
         when(jwtService.getSubFromToken(invalidToken)).thenReturn(Optional.empty());
         given()
@@ -86,7 +86,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_update_current_user_profile() throws Exception {
+    public void should_update_current_user_profile() {
         String newEmail = "newemail@example.com";
         String newBio = "updated";
         String newUsername = "newusernamee";
@@ -95,7 +95,6 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
 
         when(userRepository.findByUsername(newUsername)).thenReturn(Optional.empty());
         when(userRepository.findByEmail(newEmail)).thenReturn(Optional.empty());
-
         when(userQueryService.findById(user.getId())).thenReturn(Optional.of(userData));
 
         given()
@@ -109,7 +108,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_error_if_email_exists_when_update_user_profile() throws Exception {
+    public void should_get_error_if_email_exists_when_update_user_profile() {
         String newEmail = "newemail@example.com";
         String newBio = "updated";
         String newUsername = "newusernamee";
@@ -118,7 +117,6 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
 
         when(userRepository.findByEmail(newEmail)).thenReturn(Optional.of(new User(newEmail, "username", "123", "", "")));
         when(userRepository.findByUsername(newUsername)).thenReturn(Optional.empty());
-
         when(userQueryService.findById(user.getId())).thenReturn(Optional.of(userData));
 
         given()
@@ -133,12 +131,8 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
                 .body("errors.email[0]", equalTo("email already exist"));
     }
 
-    private Map<String, Object> prepareUpdateParam(final String newEmail, final String newBio, final String newUsername) {
-        return ImmutableMap.of("user", ImmutableMap.of("email", newEmail, "bio", newBio, "username", newUsername));
-    }
-
     @Test
-    public void should_get_401_if_not_login() throws Exception {
+    public void should_get_401_if_not_login() {
         given()
                 .contentType("application/json")
                 .body(ImmutableMap.of("user", new HashMap<String, Object>()))
@@ -146,5 +140,9 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
                 .put("/user")
                 .then()
                 .statusCode(401);
+    }
+
+    private Map<String, Object> prepareUpdateParam(final String newEmail, final String newBio, final String newUsername) {
+        return ImmutableMap.of("user", ImmutableMap.of("email", newEmail, "bio", newBio, "username", newUsername));
     }
 }

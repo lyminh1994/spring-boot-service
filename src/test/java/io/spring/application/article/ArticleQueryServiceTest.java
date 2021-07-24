@@ -34,6 +34,7 @@ import static org.junit.Assert.*;
         MyBatisArticleFavoriteRepository.class
 })
 public class ArticleQueryServiceTest extends DbTestBase {
+
     @Autowired
     private ArticleQueryService queryService;
 

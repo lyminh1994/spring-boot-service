@@ -20,14 +20,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +53,7 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
         super.setUp();
         RestAssuredMockMvc.mockMvc(mvc);
         User anotherUser = new User("other@test.com", "other", "123", "", "");
-        article = new Article("title", "desc", "body", Arrays.asList("java"), anotherUser.getId());
+        article = new Article("title", "desc", "body", Collections.singletonList("java"), anotherUser.getId());
         when(articleRepository.findBySlug(article.getSlug())).thenReturn(Optional.of(article));
         ArticleData articleData = new ArticleData(
                 article.getId(),
@@ -68,11 +67,11 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
                 article.getUpdatedAt(),
                 article.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
                 new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
-        when(articleQueryService.findBySlug(eq(articleData.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
+        when(articleQueryService.findBySlug(articleData.getSlug(), user)).thenReturn(Optional.of(articleData));
     }
 
     @Test
-    public void should_favorite_an_article_success() throws Exception {
+    public void should_favorite_an_article_success() {
         given()
                 .header("Authorization", "Token " + token)
                 .when()
@@ -86,8 +85,8 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_unfavorite_an_article_success() throws Exception {
-        when(articleFavoriteRepository.find(eq(article.getId()), eq(user.getId()))).thenReturn(Optional.of(new ArticleFavorite(article.getId(), user.getId())));
+    public void should_unfavorite_an_article_success() {
+        when(articleFavoriteRepository.find(article.getId(), user.getId())).thenReturn(Optional.of(new ArticleFavorite(article.getId(), user.getId())));
         given()
                 .header("Authorization", "Token " + token)
                 .when()
