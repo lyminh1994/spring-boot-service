@@ -7,7 +7,6 @@ import io.spring.core.user.User;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class TestHelper {

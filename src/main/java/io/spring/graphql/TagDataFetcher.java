@@ -5,7 +5,6 @@ import com.netflix.graphql.dgs.DgsData;
 import io.spring.application.TagsQueryService;
 import io.spring.graphql.DgsConstants.QUERY;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
